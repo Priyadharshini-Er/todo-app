@@ -1,0 +1,18 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - npm install
+  build:
+    commands:
+      - echo Build started
+      - node -e "console.log('Build successful')"
+  post_build:
+    commands:
+      - echo Deploying to EC2...
+      - aws ssm send-command --instance-ids "i-018af5df58c6dc91c" --document-name "AWS-RunShellScript" --parameters commands=["cd /tmp/todo-app && git pull && pkill node; npm start &"] --region "us-east-1"
+artifacts:
+  files:
+    - '**/*'
