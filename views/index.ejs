@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Taskly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div class="container">
+
+    <header>
+      <div class="logo">
+        <span class="logo-icon">✦</span>
+        <h1>Taskly</h1>
+      </div>
+      <div class="stats-pill">
+        <span><strong><%= active %></strong> left</span>
+        <span class="divider">·</span>
+        <span><strong><%= completed %></strong> done</span>
+      </div>
+    </header>
+
+    <div class="card">
+
+      <!-- Add Todo -->
+      <form action="/add" method="POST" class="add-form">
+        <input
+          type="text"
+          name="text"
+          placeholder="What needs to be done?"
+          autocomplete="off"
+          maxlength="120"
+          required
+        />
+        <button type="submit" class="btn-add">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </form>
+
+      <!-- Filters -->
+      <div class="filters">
+        <a href="/?filter=all" class="filter-btn <%= filter === 'all' ? 'active' : '' %>">All <span class="count"><%= total %></span></a>
+        <a href="/?filter=active" class="filter-btn <%= filter === 'active' ? 'active' : '' %>">Active <span class="count"><%= active %></span></a>
+        <a href="/?filter=completed" class="filter-btn <%= filter === 'completed' ? 'active' : '' %>">Done <span class="count"><%= completed %></span></a>
+      </div>
+
+      <!-- Todo List -->
+      <ul class="todo-list">
+        <% if (todos.length === 0) { %>
+          <li class="empty-state">
+            <span class="empty-icon">◎</span>
+            <p>Nothing here yet.</p>
+          </li>
+        <% } %>
+        <% todos.forEach(todo => { %>
+          <li class="todo-item <%= todo.completed ? 'completed' : '' %>">
+            <form action="/toggle/<%= todo.id %>?filter=<%= filter %>" method="POST" class="toggle-form">
+              <button type="submit" class="toggle-btn">
+                <% if (todo.completed) { %>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <% } %>
+              </button>
+            </form>
+            <span class="todo-text"><%= todo.text %></span>
+            <form action="/delete/<%= todo.id %>?filter=<%= filter %>" method="POST" class="delete-form">
+              <button type="submit" class="delete-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+
+      <!-- Clear Completed -->
+      <% if (completed > 0) { %>
+        <div class="footer-actions">
+          <form action="/clear-completed" method="POST">
+            <button type="submit" class="btn-clear">Clear completed</button>
+          </form>
+        </div>
+      <% } %>
+
+    </div>
+
+    <footer>
+      <p>Built with Node.js · Express · EJS</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
