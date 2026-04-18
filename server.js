@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
     active: todos.filter(t => !t.completed).length,
   });
 });
-
+// updated
 // POST - Add todo
 app.post('/add', (req, res) => {
   const text = req.body.text?.trim();
